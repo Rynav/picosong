@@ -1,24 +1,42 @@
-"use client"
+"use client";
 
-import {useEffect, useState} from "react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import {useRouter} from "next/navigation"
 
-export default function Home({params}: any) {
+export default function Home({ params }: any) {
+  const router = useRouter();
+  const [data, setData] = useState<any>({});
+  const [error, setError] = useState<string>();
 
-    const [data, setData] = useState<any>({});
+  useEffect(() => {
+    let fetched = fetch(
+      process.env.NEXT_PUBLIC_APIURL + `/api/fetch/${params.slug}`
+    ).then((response) => {
+      console.log(response.statusText)
+      if(response.statusText != "OK") return setError(response.statusText);
+      response.json().then((json) => {
+        setData(json);
+      })
+    })
+  }, []);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await fetch(`http://localhost:7979/api/v1/song/${params.slug}`)
-            const jsonData = await data.json();
-            setData(jsonData);
-        }
-        fetchData();
-    }, []);
-
-    return(
-        <div className="flex items-center justify-center min-h-screen flex-col gap-5">
-            <p>{data.filename}</p>
-            <audio src={data.link} controls></audio>
+  if(error == "Not Found") {
+      return(
+        <div className="min-h-screen w-screen flex items-center justify-center flex-col">
+          <p>The file you are looking for could not be found on our servers.</p>
+          <p>If you have any proof of this file existance, please contact us at <a href="mailto:missing@picosong.site" className={"underline"}>missing@picosong.site</a></p>
+          <Button onClick={() => {router.push("/")}}>Go back</Button>
         </div>
-    )
+      )
+    }
+  else{
+    return (
+      <div className="flex items-center justify-center min-h-screen flex-col gap-5">
+        <div className="">
+          <p>{data.data}</p>
+        </div>
+      </div>
+    );
+  }
 }

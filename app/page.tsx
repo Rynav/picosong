@@ -43,19 +43,16 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="grid w-full max-w-sm items-center gap-1.5 ">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 flex flex-col items-center">
                     <FormField
                         control={form.control}
                         name="id"
                         render={({ field }) => (
-                            <FormItem>
+                            <FormItem className={"w-full"}>
                                 <FormLabel>Song id.</FormLabel>
                                     <FormControl>
                                         <Input placeholder="EG. wgurE" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                        This is the song id.
-                                    </FormDescription>
+                                    </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
